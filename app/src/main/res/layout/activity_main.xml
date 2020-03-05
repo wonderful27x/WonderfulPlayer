@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="http://114.55.252.175:8080/file/others/Love Story.mp4" />
+
+    <SurfaceView
+        android:id="@+id/surface"
+        android:layout_width="350dp"
+        android:layout_height="200dp"/>
+
+    <LinearLayout
+        android:id="@+id/seekLayout"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            tools:text="00:00/00:00"/>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="play"/>
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="stop"/>
+
+    <Button
+        android:id="@+id/localStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="本地播放"/>
+
+    <Button
+        android:id="@+id/netStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="网络播放"/>
+
+
+</LinearLayout>
