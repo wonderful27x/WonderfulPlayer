@@ -13,7 +13,7 @@ JniCallback::JniCallback(JavaVM *javaVm,JNIEnv *env,jobject instance) {
     jclass clazz = env->GetObjectClass(instance);
     this->prepareId = env->GetMethodID(clazz,"prepareSuccess","()V");
     this->errorId = env->GetMethodID(clazz,"error","(I)V");
-    this->progressId = env->GetMethodID(clazz,"progressUpdate","(D)V");
+    this->progressId = env->GetMethodID(clazz,"progressUpdate","(I)V");
 }
 
 JniCallback::~JniCallback() {
@@ -54,7 +54,7 @@ void JniCallback::error(int threadMode,ErrorType type) {
     }
 }
 
-void JniCallback::progressUpdate(int threadMode,double progress) {
+void JniCallback::progressUpdate(int threadMode,int progress) {
     //主线程jni回调
     if(threadMode == THREAD_MAIN){
         env->CallVoidMethod(instance,progressId,progress);

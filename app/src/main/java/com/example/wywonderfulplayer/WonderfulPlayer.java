@@ -10,11 +10,12 @@ public class WonderfulPlayer implements SurfaceHolder.Callback {
         System.loadLibrary("wonderful");
     }
 
-    private JniCallback jniCallback;            //Jni回调接口
-    private String dataSource;                  //播放地址
-    private SurfaceHolder surfaceHolder;        //surfaceHolder
-    private int duration = 0;                   //播放总时长
+    private JniCallback jniCallback;                       //Jni回调接口
+    private String dataSource;                             //播放地址
+    private SurfaceHolder surfaceHolder;                   //surfaceHolder
+    private int duration = 0;                              //播放总时长
     private @PlayState int playState = PlayState.STOP;     //播放状态
+    private @PlayType int playType = PlayType.LOCAL;       //播放状态
 
     public WonderfulPlayer(String dataSource){
         this.dataSource = dataSource;
@@ -79,7 +80,7 @@ public class WonderfulPlayer implements SurfaceHolder.Callback {
     interface JniCallback{
         public void prepareSuccess();               //准备成功
         public void error(int code);                //错误信息
-        public void progressUpdate(double progress);//播放进度条更新
+        public void progressUpdate(int progress);   //播放进度条更新
     }
 
     //播放准备工作完成的回调方法，由native反射调用
@@ -97,13 +98,14 @@ public class WonderfulPlayer implements SurfaceHolder.Callback {
     }
 
     //播放进度回调，由native反射调用
-    public void progressUpdate(double progress){
+    public void progressUpdate(int progress){
         if (jniCallback != null){
             jniCallback.progressUpdate(progress);
         }
     }
     //改变播放进度
     public void seek(double progress){
+        if (playType == PlayType.RTMP)return;
         seekNative(progress);
     }
 
@@ -117,6 +119,14 @@ public class WonderfulPlayer implements SurfaceHolder.Callback {
 
     public @PlayState int getPlayState() {
         return playState;
+    }
+
+    public @PlayType int getPlayType() {
+        return playType;
+    }
+
+    public void setPlayType(@PlayType int playType) {
+        this.playType = playType;
     }
 
     public void playControl(@PlayState int state){

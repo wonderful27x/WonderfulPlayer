@@ -14,7 +14,7 @@ public:
     ~JniCallback();
     void prepareSuccess(int threadMode);
     void error(int threadMode,ErrorType type);
-    void progressUpdate(int threadMode, double progress);
+    void progressUpdate(int threadMode, int progress);
 
 private:
     JavaVM *javaVm = nullptr;

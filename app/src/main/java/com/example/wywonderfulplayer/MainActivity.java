@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private LinearLayout seekLayout;
     private boolean isTouch = false;
 
-    String totalTime;//总时长
+    String totalTime = "00:00";//总时长
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        wonderfulPlayer.getDurationForNative();//获取总时长
-                        initPlayTime();
+                        if(wonderfulPlayer.getPlayType() != PlayType.RTMP){
+                            wonderfulPlayer.getDurationForNative();//获取总时长
+                            initPlayTime();
+                        }
                         wonderfulPlayer.setPlayState(PlayState.PLAYING);
                         control.setText("pause");
                         wonderfulPlayer.start();
@@ -97,20 +99,33 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
                 }
             }
 
+            /**
+             * 更新进度条
+             * @param progress 当前播放时间
+             * 如果改成当前进度百分比，这种方式会产生问题，当直播的时候就得不到百分比
+             */
             @Override
-            public void progressUpdate(final double progress) {
-                if (wonderfulPlayer.getDuration() == 0)return;
+            public void progressUpdate(final int progress) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        //当没有正在手动改变进度条时才自动更新
+                        //当没有正在手动改变进度条时才自动更新
                         if (!isTouch){
-                            int currentTime = (int)(wonderfulPlayer.getDuration() * progress);
-                            String currentMinutes = getMinutes(currentTime);
-                            String currentSeconds = getSeconds(currentTime);
-                            String times = currentMinutes + ":" + currentSeconds + "/" + totalTime;
-                            time.setText(times);
-                            seekBar.setProgress((int)(progress * 100));
+                            if(wonderfulPlayer.getPlayType() == PlayType.RTMP){
+                                String currentMinutes = getMinutes(progress);
+                                String currentSeconds = getSeconds(progress);
+                                String times = currentMinutes + ":" + currentSeconds + "/" + totalTime;
+                                time.setText(times);
+                            }else {
+                                String currentMinutes = getMinutes(progress);
+                                String currentSeconds = getSeconds(progress);
+                                String times = currentMinutes + ":" + currentSeconds + "/" + totalTime;
+                                time.setText(times);
+                                if (wonderfulPlayer.getDuration() != 0){
+                                    int seekBarProgress = progress * 100 / wonderfulPlayer.getDuration() ;
+                                    seekBar.setProgress(seekBarProgress);
+                                }
+                            }
                         }
                     }
                 });
@@ -123,13 +138,11 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //duration等于零说明是直播类型，没有进度条
                 if (wonderfulPlayer.getDuration() != 0){
                     String minutes = getMinutes(wonderfulPlayer.getDuration());
                     String seconds = getSeconds(wonderfulPlayer.getDuration());
                     totalTime = minutes + ":" + seconds;
                     time.setText("00:00/" + totalTime);
-                    seekLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -214,11 +227,13 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         if (v.getId() == R.id.localStart){
             String path = new File(Environment.getExternalStorageDirectory() + "/move/" + name.getText().toString()).getAbsolutePath();
             wonderfulPlayer.setDataSource(path);
+            wonderfulPlayer.setPlayType(PlayType.LOCAL);
             wonderfulPlayer.prepare();
         }
         if (v.getId() == R.id.netStart){
             String path = name.getText().toString();
             wonderfulPlayer.setDataSource(path);
+            wonderfulPlayer.setPlayType(PlayType.RTMP);
             wonderfulPlayer.prepare();
         }
     }

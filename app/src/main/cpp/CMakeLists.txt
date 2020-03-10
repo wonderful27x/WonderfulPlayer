@@ -26,6 +26,7 @@ target_link_libraries( # Specifies the target library.
         avutil
         swresample
         swscale
+        rtmp
         -Wl,--end-group
         z
         ${log-lib}

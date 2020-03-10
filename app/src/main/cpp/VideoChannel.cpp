@@ -146,8 +146,11 @@ void VideoChannel::play() {
         //没有音频则按照原帧率进行播放
         if(!audioChannel){
             av_usleep(realDelay * 1000000);
-            if(jniCallback && duration != 0){
-                jniCallback->progressUpdate(THREAD_CHILD,play_time/duration);
+//            if(jniCallback && duration != 0){
+//                jniCallback->progressUpdate(THREAD_CHILD,play_time);
+//            }
+            if(jniCallback){
+                jniCallback->progressUpdate(THREAD_CHILD,play_time);
             }
         }
         else{

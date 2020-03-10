@@ -264,8 +264,11 @@ int AudioChannel::getPCM() {
         pcmSize = singleSampleNum * sampleSize * channelNum;
         //每帧音频的时间,这稍微做一下转换，因为他有自己的一套时间单位
         play_time = frame->best_effort_timestamp * av_q2d(time_base);
-        if(jniCallback && duration != 0){
-            jniCallback->progressUpdate(THREAD_CHILD,play_time/duration);
+//        if(jniCallback && duration != 0){
+//            jniCallback->progressUpdate(THREAD_CHILD,play_time);
+//        }
+        if(jniCallback){
+            jniCallback->progressUpdate(THREAD_CHILD,play_time);
         }
         break;
     }
