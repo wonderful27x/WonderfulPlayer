@@ -162,12 +162,13 @@ void WonderfulPlayer::start() {
     if(videoChannel){
         videoChannel->setAudioChannel(audioChannel);
         videoChannel->start();                        //视频通道开始处理
+        LOGE("启动videoChannel！");
     }
-    LOGE("启动videoChannel！");
+
     if (audioChannel){
         audioChannel->start();                         //音频通道开始处理
+        LOGE("启动audioChannel！");
     }
-    LOGE("启动audioChannel！");
     pthread_create(&pid_start,nullptr,startTask,this);//开启一个线程对音视频流进行处理，读取压缩包packet加入对应的队列中
 }
 
@@ -189,10 +190,16 @@ void WonderfulPlayer::startExecute() {
          * 难道这个packet并没有被读到内存中吗??? 到底是什么原因造成了continue后的内存泄漏???
          * 另一个值得注意的问题是：播放时每间隔15秒左右内存会被小量释放一次，具体进行Profiler查看，后来发现这是java层的gc
          * 并且这种内存波动造成了音频的卡顿，视频影响不大,然而实验证明不跑Profiler的情况下这种卡顿不会发生！！！
+         *
+         * 所有的内存泄漏基本都解决了，TODO test中
          */
 
-        LOGD("video_packet_size:%d",videoChannel->packetQueue.size());
-        LOGD("audio_packet_size:%d",audioChannel->packetQueue.size());
+        if(videoChannel){
+            LOGD("video_packet_size:%d",videoChannel->packetQueue.size());
+        }
+        if(audioChannel){
+            LOGD("audio_packet_size:%d",audioChannel->packetQueue.size());
+        }
 
         if(videoChannel && videoChannel->packetQueue.size() >= V_PACKET_QUEUE_SIZE){
             av_usleep(V_P_SLEEP_TIME * 1000);//单位是微秒，乘以1000转换成毫秒

@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
             wonderfulPlayer.stop();
         }
         if (v.getId() == R.id.localStart){
-            String path = new File(Environment.getExternalStorageDirectory() + "/move/" + name.getText().toString()).getAbsolutePath();
+            String path = new File(Environment.getExternalStorageDirectory() + "/wonderful/" + name.getText().toString()).getAbsolutePath();
             wonderfulPlayer.setDataSource(path);
             wonderfulPlayer.setPlayType(PlayType.LOCAL);
             wonderfulPlayer.prepare();
