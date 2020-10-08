@@ -7,7 +7,7 @@
 
 #include <android/log.h>
 #define TAG "wonderfulJni"
-#define ENABLE_LOG 1
+#define ENABLE_LOG 0
 
 #if ENABLE_LOG
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE,TAG,__VA_ARGS__)

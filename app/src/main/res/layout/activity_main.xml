@@ -6,12 +6,27 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <EditText
-        android:id="@+id/name"
+    <LinearLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginBottom="10dp"
-        android:text="rtmp://114.55.252.175/wonderful" />
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="rtmp://114.55.252.175/wonderful" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <SurfaceView
         android:id="@+id/surface"
@@ -57,18 +72,11 @@
         android:text="stop"/>
 
     <Button
-        android:id="@+id/localStart"
+        android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="本地播放"/>
-
-    <Button
-        android:id="@+id/netStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="网络播放"/>
+        android:text="开始播放"/>
 
 
 </LinearLayout>

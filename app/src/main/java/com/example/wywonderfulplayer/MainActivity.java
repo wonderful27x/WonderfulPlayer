@@ -13,10 +13,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
@@ -29,10 +32,10 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
     private SeekBar seekBar;
     private Button control;
     private Button stop;
-    private Button localStart;
-    private Button netStart;
+    private Button start;
     private TextView time;
     private EditText name;
+    private Spinner spinner;
     private LinearLayout seekLayout;
     private boolean isTouch = false;
 
@@ -47,17 +50,30 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         seekBar = findViewById(R.id.seekBar);
         control = findViewById(R.id.control);
         stop = findViewById(R.id.stop);
-        localStart = findViewById(R.id.localStart);
-        netStart = findViewById(R.id.netStart);
+        start = findViewById(R.id.start);
         time = findViewById(R.id.time);
         name = findViewById(R.id.name);
+        spinner = findViewById(R.id.spinner);
         seekBar.setOnSeekBarChangeListener(this);
         control.setOnClickListener(this);
         stop.setOnClickListener(this);
-        localStart.setOnClickListener(this);
-        netStart.setOnClickListener(this);
+        start.setOnClickListener(this);
 
-//        memoryPrint();
+        final String[] address = {"red.mp4","http://114.55.252.175:8080/file/videos/love.mp4","rtmp://114.55.252.175/wonderful"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_layout,address);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                name.setText(address[position]);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //memoryPrint();
         permission();
     }
 
@@ -224,17 +240,36 @@ public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBar
         if (v.getId() == R.id.stop){
             wonderfulPlayer.stop();
         }
-        if (v.getId() == R.id.localStart){
-            String path = new File(Environment.getExternalStorageDirectory() + "/wonderful/" + name.getText().toString()).getAbsolutePath();
-            wonderfulPlayer.setDataSource(path);
-            wonderfulPlayer.setPlayType(PlayType.LOCAL);
-            wonderfulPlayer.prepare();
-        }
-        if (v.getId() == R.id.netStart){
-            String path = name.getText().toString();
-            wonderfulPlayer.setDataSource(path);
-            wonderfulPlayer.setPlayType(PlayType.RTMP);
-            wonderfulPlayer.prepare();
+        if (v.getId() == R.id.start){
+            String nameString = name.getText().toString();
+            //默认本地路径
+            if (!nameString.contains("/")){
+                String path = new File(Environment.getExternalStorageDirectory() + "/wonderful/" + nameString).getAbsolutePath();
+                wonderfulPlayer.setDataSource(path);
+                wonderfulPlayer.setPlayType(PlayType.LOCAL);
+                wonderfulPlayer.prepare();
+            }
+            //网络点播路径
+            else if(nameString.contains("http") || nameString.contains("https")){
+                String path = name.getText().toString();
+                wonderfulPlayer.setDataSource(path);
+                wonderfulPlayer.setPlayType(PlayType.CLICK);
+                wonderfulPlayer.prepare();
+            }
+            //rtmp路径
+            else if (nameString.contains("rtmp")){
+                String path = name.getText().toString();
+                wonderfulPlayer.setDataSource(path);
+                wonderfulPlayer.setPlayType(PlayType.RTMP);
+                wonderfulPlayer.prepare();
+            }
+            //本地全路径
+            else {
+                String path = name.getText().toString();
+                wonderfulPlayer.setDataSource(path);
+                wonderfulPlayer.setPlayType(PlayType.LOCAL);
+                wonderfulPlayer.prepare();
+            }
         }
     }
 
